@@ -3,9 +3,10 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from lppls import lppls
+from crawler import crawl
 
 
-def read_data(src="esf.csv", data_only=False):
+def read_data(src="spx.csv", data_only=False):
     src = "data/" + src
     data = pd.read_csv(src, index_col="Date")
 
@@ -63,8 +64,10 @@ def calc(count=25):
 
 
 def run():
+    data2 = calc(count=5)
     data1 = calc(count=25)
-    data2 = calc(count=20)
+
+    crawl()
 
     t = data1['Time'].tolist()
     obs = data1['Observations'].tolist()
