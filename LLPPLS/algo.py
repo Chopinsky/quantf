@@ -6,8 +6,8 @@ from lppls import lppls
 from crawler import crawl
 
 
-def read_data(src="spx.csv", data_only=False):
-    src = "data/" + src
+def read_data(ticket, data_only=False):
+    src = "data/" + ticket + ".csv"
     data = pd.read_csv(src, index_col="Date")
 
     if data_only:
@@ -27,8 +27,8 @@ def lppl(t, tc, m, w, a, b, c1, c2):
     return a + np.power(tc - t, m) * (b + ((c1 * np.cos(w * np.log(tc - t))) + (c2 * np.sin(w * np.log(tc - t)))))
 
 
-def calc(count=25):
-    data = read_data(data_only=True)
+def calc(ticket, count=25):
+    data = read_data(ticket, data_only=True)
 
     # print(data)
 
@@ -63,11 +63,12 @@ def calc(count=25):
     return predict
 
 
-def run():
-    data2 = calc(count=5)
-    data1 = calc(count=25)
+def run(ticket="spx"):
+    crawl(ticket)
+    print("data updated ...")
 
-    crawl()
+    data2 = calc(ticket, count=5)
+    data1 = calc(ticket, count=25)
 
     t = data1['Time'].tolist()
     obs = data1['Observations'].tolist()
@@ -78,7 +79,10 @@ def run():
     plt.plot(t, fit2, label="fit-shot")
     plt.plot(t, obs, label="obs")
 
+    plt.savefig("./history/" + ticket + ".png")
     plt.show()
 
+    print("all done ...")
 
-run()
+
+run("smpl")
