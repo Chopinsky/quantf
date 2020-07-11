@@ -10,16 +10,20 @@ def read_data(ticket, data_only=False):
     src = "data/" + ticket + ".csv"
     data = pd.read_csv(src, index_col="Date")
 
+    # remove empty cells
+    data = data[data["Adj Close"].notnull()]
+    print("data shape:", data.shape)
+
     if data_only:
         return data
 
-    date = data.index
     t_len = len(data)
-    time = np.linspace(0, t_len-1, t_len)
-    close = [data["Adj Close"][i] for i in range(len(data["Adj Close"]))]
-    series = [time, close, date]
 
-    return series
+    date = data.index
+    time = np.linspace(0, t_len - 1, t_len)
+    close = [data["Adj Close"][i] for i in range(len(data["Adj Close"]))]
+
+    return [time, close, date]
 
 
 # revised version of the LPPL without φ
@@ -30,8 +34,6 @@ def lppl(t, tc, m, w, a, b, c1, c2):
 def calc(ticket, count=25):
     data = read_data(ticket, data_only=True)
 
-    # print(data)
-
     # convert index col to evenly spaced numbers over a specified interval
     time = np.linspace(0, len(data) - 1, len(data))
 
@@ -41,8 +43,6 @@ def calc(ticket, count=25):
 
     # create Mx2 matrix (expected format for LPPLS observations)
     observations = np.array([time, price])
-
-    # print(observations)
 
     # set the max number for searches to perform before giving-up
     # the literature suggests 25
@@ -67,17 +67,18 @@ def run(ticket="spx"):
     crawl(ticket)
     print("data updated ...")
 
-    data2 = calc(ticket, count=5)
+    # data2 = calc(ticket, count=5)
     data1 = calc(ticket, count=25)
 
     t = data1['Time'].tolist()
     obs = data1['Observations'].tolist()
     fit1 = data1['LPPLS Fit'].tolist()
-    fit2 = data2['LPPLS Fit'].tolist()
+    # fit2 = data2['LPPLS Fit'].tolist()
 
-    plt.plot(t, fit1, label="fit-long")
-    plt.plot(t, fit2, label="fit-shot")
-    plt.plot(t, obs, label="obs")
+    plt.plot(t, fit1, label="long")
+    # plt.plot(t, fit2, label="short")
+    plt.plot(t, obs, label="price")
+    plt.legend(loc="upper left")
 
     plt.savefig("./history/" + ticket + ".png")
     plt.show()
@@ -85,4 +86,4 @@ def run(ticket="spx"):
     print("all done ...")
 
 
-run("smpl")
+run("lulu")
