@@ -67,16 +67,16 @@ def run(ticket="spx"):
     crawl(ticket)
     print("data updated ...")
 
-    # data2 = calc(ticket, count=5)
+    data2 = calc(ticket, count=5)
     data1 = calc(ticket, count=25)
 
     t = data1['Time'].tolist()
     obs = data1['Observations'].tolist()
     fit1 = data1['LPPLS Fit'].tolist()
-    # fit2 = data2['LPPLS Fit'].tolist()
+    fit2 = data2['LPPLS Fit'].tolist()
 
     plt.plot(t, fit1, label="long")
-    # plt.plot(t, fit2, label="short")
+    plt.plot(t, fit2, label="short")
     plt.plot(t, obs, label="price")
     plt.legend(loc="upper left")
 
@@ -86,4 +86,4 @@ def run(ticket="spx"):
     print("all done ...")
 
 
-run("lulu")
+run("nflx")
