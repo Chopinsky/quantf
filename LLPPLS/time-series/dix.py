@@ -23,42 +23,35 @@ def read(loc):
     return df
 
 
-def find_turns(data, col="Adj Close"):
+def find_turns(data, col="Adj Close", to_print=True):
     size = len(data)
     peaks = [data[i] for i in range(1, size-1) if data[i][col] > data[i-1][col] and data[i][col] > data[i+1][col]]
     dips = [data[i] for i in range(1, size-1) if data[i][col] < data[i-1][col] and data[i][col] < data[i+1][col]]
 
-    peak_time = []
-    peak_close = []
-    dip_time = []
-    dip_close = []
+    peak_time, peak_close = [], []
+    dip_time, dip_close = [], []
 
-    print("Peaks:")
     for p in peaks:
         peak_time.append(p['Date'])
         peak_close.append(float(p['Adj Close']))
 
-    # print(peak_close)
-
-    print("Dips:")
     for p in dips:
         dip_time.append(p['Date'])
         dip_close.append(float(p['Adj Close']))
 
-    # print(dip_close)
+    if to_print:
+        plt.figure()
 
-    plt.figure()
+        plt.subplot(211)
+        plt.plot(peak_time, peak_close, "ro")
 
-    plt.subplot(211)
-    plt.plot(peak_time, peak_close, "ro")
+        plt.subplot(212)
+        plt.plot(dip_time, dip_close, "ro")
 
-    plt.subplot(212)
-    plt.plot(dip_time, dip_close, "ro")
+        plt.show()
 
-    plt.show()
-
-    return peaks
+    return peak_time, peak_close, dip_time, dip_close
 
 
-df = read("../data/spy.csv")
-find_turns(df)
+src = read("../data/spy.csv")
+find_turns(src)
