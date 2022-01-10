@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import dateutil.parser as parser
 
 
 def read(loc='dix.csv'):
